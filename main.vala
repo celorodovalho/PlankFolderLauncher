@@ -1,20 +1,84 @@
-int main(string[] args) {
-    Gtk.init(ref args);
+// This is Vala Code!
 
-    var header = new Gtk.HeaderBar();
-    header.set_show_close_button(true);
+using Gtk;
 
-    var window = new Gtk.Window();
-    window.set_titlebar(header);
-    window.destroy.connect(Gtk.main_quit);
-    window.set_default_size(350, 70);
-    window.border_width = 10;
+class ElementaryFileViewer : Window {
+  TextView text_view;
 
-    var myButton = new Gtk.Button.with_label("Hello world!");
+  ElementaryFileViewer () {
+    /*var header = new HeaderBar ();
+    //header.title = "ElementaryOS";
+    header.show_close_button = true;
+    header.subtitle = "An ElementaryOS App";
+    header.spacing = 0;*/
 
-    window.add(myButton);
-    window.show_all();
+    window_position = WindowPosition.CENTER;
+//    set_titlebar(false);
+    skip_taskbar_hint = true;
+    set_default_size (200, 200);
+//    set_keep_above(true);
+    set_decorated(false);
+//    set_modal(true);
+//    set_opacity(0.5);
+    set_app_paintable(true);
+    this.add (new Gtk.Label ("Hello, world!"));
+//    set_default_size (500, 600);
+//    border_width = 2;
 
-    Gtk.main();
+//    var dialog = new Gtk.MessageDialog(null,Gtk.DialogFlags.MODAL,Gtk.MessageType.INFO, Gtk.ButtonsType.OK, "Hello from Vala!");
+//    dialog.set_title("Message Dialog");
+//    dialog.run();
+//    dialog.destroy();
+
+
+    var open_icon = new Image.from_icon_name ("document-open", IconSize.SMALL_TOOLBAR); // Explicit Typing
+    var open_button = new ToolButton (open_icon, "Open");
+    open_button.is_important = true;
+    open_button.clicked.connect (on_open_clicked);
+    //header.add (open_button);
+
+    text_view = new TextView ();
+    text_view.editable = false;
+    text_view.cursor_visible = false;
+
+    var scroll = new ScrolledWindow (null, null);
+    scroll.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
+    scroll.add (text_view);
+
+    var vbox = new Box (Orientation.VERTICAL, 0);
+    vbox.pack_start (scroll, true, true, 0);
+    add (vbox);
+  }
+
+  void on_open_clicked () {
+    var file_chooser = new FileChooserDialog ("Open File", this,
+                                  FileChooserAction.OPEN,
+                                  "_Cancel", ResponseType.CANCEL,
+                                  "_Open", ResponseType.ACCEPT);
+    if (file_chooser.run () == ResponseType.ACCEPT) {
+      open_file (file_chooser.get_filename ());
+    }
+    file_chooser.destroy ();
+  }
+
+  void open_file (string filename) {
+    try {
+      string text;
+      FileUtils.get_contents (filename, out text);
+      this.text_view.buffer.text = text;
+    } catch (Error e) {
+      stderr.printf ("Error: %s\n", e.message);
+    }
+  }
+
+  static int main (string[] args) {
+    init (ref args);
+
+    var window = new ElementaryFileViewer ();
+    window.destroy.connect (main_quit);
+    window.show_all ();
+
+    Gtk.main ();
     return 0;
+  }
 }
