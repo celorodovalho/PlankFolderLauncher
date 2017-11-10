@@ -19,7 +19,7 @@ class ElementaryFileViewer : Window {
 //    set_keep_above(true);
     set_decorated(false);
 //    set_modal(true);
-//    set_opacity(0.5);
+    set_opacity(0.5);
     set_app_paintable(true);
 //    File docsets = File.new_for_path (Environment.get_home_dir () + "/.local/share/zeal/docsets");
 //    string textFinal = "";
@@ -73,7 +73,7 @@ class ElementaryFileViewer : Window {
 //
 //    text_view.buffer.text = textFinal;
 
-    var scroll = new ScrolledWindow (null, null);
+    /*var scroll = new ScrolledWindow (null, null);
     scroll.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
 //    scroll.add (text_view);
     var icons = 5;
@@ -82,12 +82,13 @@ class ElementaryFileViewer : Window {
         var icon = new Image.from_icon_name ("document-open", IconSize.LARGE_TOOLBAR);
         scroll.add (icon);
     }
-    scroll.add (open_icon);
+    scroll.add (open_icon);*/
 
-    var vbox = new Box (Orientation.VERTICAL, 0);
+    /*var vbox = new Box (Orientation.VERTICAL, 0);
     vbox.set_app_paintable(true);
-    vbox.pack_start (scroll, true, true, 0);
-    add (vbox);
+    //vbox.pack_start (scroll, true, true, 0);
+    vbox.pack_start (open_icon, true, true, 0);*/
+    add (open_icon);
   }
 
 //  void on_open_clicked () {

@@ -1,0 +1,15 @@
+.test-bg {
+	background-color: #FFF;
+	margin: 15px;
+	border: 2px solid red;
+	border-radius: 50px;
+}
+.main-window {
+  background-color: transparent;
+  margin: 25px;
+  opacity: 0;
+}
+.header-bar {
+	opacity: 0;
+	background-color: transparent;
+}
