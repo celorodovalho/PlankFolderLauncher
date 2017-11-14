@@ -1,27 +1,122 @@
 using Gtk;
 using Posix;
+using GLib;
+using Granite;
 
 public class Application : Gtk.Window {
     private Gtk.Grid grid;
     private Gtk.Widget btnCurrent;
 	public Application (string folder_path) {
+		int x, y;
 		this.window_position = Gtk.WindowPosition.MOUSE;
 		this.destroy.connect(Gtk.main_quit);
-        int x, y;
         this.get_position(out x, out y);
         this.move(x-95, 350);
-		this.set_border_width(0);
-		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+        this.set_border_width(0);
+        this.set_deletable(false);
+        this.set_resizable(false);
+        this.set_type_hint(Gdk.WindowTypeHint.DIALOG);
+//        this.type = Gtk.WindowType.TOPLEVEL;
+//        GLib.Object(type: Gtk.WindowType.POPUP);
+		Gtk.Box box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		this.grid = new Gtk.Grid();
 		this.grid.set_column_spacing(2);
         this.grid.set_row_spacing(2);
-		this.grid.get_style_context().add_class("grid-bg");
-		this.get_style_context().add_class("main-window");
+
+        Gtk.HeaderBar headerbar = new Gtk.HeaderBar();
+
+        string[] paths = folder_path.split("/");
+        if (paths[paths.length - 1] != "") {
+            headerbar.set_title(paths[paths.length - 1]);
+        } else {
+            headerbar.set_title(paths[paths.length - 2]);
+        }
+
+        this.set_titlebar(headerbar);
+
+        string css = """
+              .custom-GtkBox,
+              .custom-GtkGrid {
+                  background: #F8F8F8;
+                  margin: 15px;
+                  border-radius: 0 0 5px 5px;
+                  padding: 5px;
+                  margin: 25px;
+                  border: 1px solid #DDD;
+                  border-top: 1px solid #FFF;
+              }
+
+              .custom-GtkWindow {
+                  background: transparent;
+                  margin: 25px;
+                  border: 0 none;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+              }
+              .custom-GtkWindow GtkHeaderBar,
+              GtkHeaderBar,
+              .header-bar {
+                    opacity: 1;
+                    background: #F8F8F8;
+                    margin: 20px 0;
+                    padding: 20px 0;
+                    border-radius: 5px 5px 0 0;
+                    border: 1px solid #DDD;
+                    border-bottom: 1px solid #CCC;
+                }
+                headerbar entry,
+                headerbar spinbutton,
+                headerbar button,
+                headerbar separator,
+                .default-decoration,
+                .default-decoration .titlebutton,
+                window.ssd headerbar.titlebar,
+                window.ssd headerbar.titlebar button.titlebutton,
+                .header-bar.default-decoration {
+                    border: 0 none;
+                    box-shadow: 0 0 0;
+                    padding: 0;
+                    margin: 0;
+                }
+                .header-bar .title,
+                .titlebar GtkLabel {
+                    color: #989898;
+                    font: raleway 18;
+                    font-weight: normal;
+                    text-shadow: 0 0 0;
+                }
+
+              GtkButton,
+              .custom-GtkWindow GtkButton,
+              .custom-GtkWindow GtkEntry,
+              .custom-GtkEntry
+              {
+                  border: 0 none;
+                  padding: 15px 0;
+                  font: inherit;
+                  outline: inherit;
+                  background: transparent;
+                  box-shadow: none;
+              }
+            """;
+
+        Gtk.CssProvider provider = new Gtk.CssProvider();
+        try {
+            provider.load_from_data (css, css.length);
+        } catch (GLib.Error e) {
+            warning("Error while loading css: %s", e.message);
+        }
+        Gtk.StyleContext.add_provider_for_screen(
+            this.get_screen(),
+            provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION //Gtk.STYLE_PROVIDER_PRIORITY_USER
+        );
+
     	Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default();
         try {
             Gtk.SizeGroup sizegroup = new Gtk.SizeGroup (Gtk.SizeGroupMode.BOTH);
-            var row = 1;
-            var col = 1;
+            int row = 1;
+            int col = 1;
             GLib.Dir dir = GLib.Dir.open(folder_path, 0);
             string? name = null;
             while ((name = dir.read_name()) != null) {
@@ -41,7 +136,6 @@ public class Application : Gtk.Window {
                 if (FileUtils.test(path, FileTest.IS_DIR)) {
                     Gtk.Image imgBtn2 = new Gtk.Image.from_icon_name("document-open", Gtk.IconSize.DND);
                     Gtk.Button button2 = new Gtk.Button();
-                    button2.get_style_context().add_class("button");
 
                     var button2Box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
                     var labelBtn2 = new Gtk.Label(name);
@@ -77,7 +171,6 @@ public class Application : Gtk.Window {
                         }
                     }
                     Gtk.Button button1 = new Gtk.Button();
-                    button1.get_style_context().add_class("button");
 
                     var button1Box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
                     var labelBtn1 = new Gtk.Label(appname);
@@ -108,6 +201,8 @@ public class Application : Gtk.Window {
         } catch (GLib.Error err) {
             GLib.stderr.printf(err.message);
         }
+        this.grid.get_style_context().add_class("custom-GtkGrid");
+        this.get_style_context().add_class("custom-GtkWindow");
         box.add(grid);
 		this.add (box);
 	}
@@ -124,29 +219,12 @@ public class Application : Gtk.Window {
 	public static int main (string[] args) {
 		Gtk.init(ref args);
 
-		var css_provider = new Gtk.CssProvider();
-		try {
-            //css_provider.load_from_path(Environment.get_current_dir()+"/app.css");
-    		css_provider.load_from_path(Environment.get_home_dir()+"/Projetos/plankfolderlauncher/app.css");
-    	} catch (GLib.Error e) {
-            warning("Error while loading css: %s", e.message);
-    	}
-
-        //GLib.stdout.printf ("CSS: %s", Environment.get_current_dir ());
-
-		string folder_path = "";
+		string folder_path = Environment.get_home_dir()+"/Projetos/teste/";
 		if (args[1] != null) {
 			folder_path = args[1];
 		}
 
 		Application app = new Application(folder_path);
-
-		Gtk.StyleContext.add_provider_for_screen(
-            app.get_screen(),
-            css_provider,
-			Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-		);
-		app.get_style_context().add_class("main-window");
 
 		app.show_all ();
 		Gtk.main ();

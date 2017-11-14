@@ -1,6 +1,10 @@
-# My project's README
+# Plank Folder Launcher
 
 Compilar: 
-- valac --pkg gtk+-3.0 
-- valac -X -lm --pkg gtk+-3.0 --pkg cairo --pkg gdk-3.0 teste2.vala
-- valac --pkg gtk+-3.0 --pkg cairo --pkg gdk-3.0 teste2.vala  
+- valac --pkg gtk+-3.0 --pkg posix --pkg gdk-3.0 --pkg granite app.vala && ./app
+
+Como utilizar:
+- Edite o arquivo "plank-folder-shortcut.desktop"
+- Na linha que contem "Exec=" substitua pelo caminho relativo do executavel "app" seguido da pasta que deseja exibir o conteudo, ex: 
+  * Exec=/home/USUARIO/Downloads/plankfolderlauncher/app "/home/USUARIO/Downloads/" 
+- Salve o arquivo "plank-folder-shortcut.desktop" e o arraste ate o Plank (Dock)
