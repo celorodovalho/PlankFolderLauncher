@@ -1,7 +1,9 @@
 # Plank Folder Launcher
 
+![Sample](https://raw.githubusercontent.com/celorodovalho/PlankFolderLauncher/master/sample.png)
+
 Compilar: 
-- valac --pkg gtk+-3.0 --pkg posix --pkg gdk-3.0 --pkg granite app.vala && ./app
+- valac --pkg gtk+-3.0 --pkg posix --pkg gdk-3.0 app.vala && ./app
 
 Como utilizar:
 - Edite o arquivo "plank-folder-shortcut.desktop"
