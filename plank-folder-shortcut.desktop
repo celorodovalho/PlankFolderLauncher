@@ -2,12 +2,7 @@
 Version=1.0
 Name=Plank Folder
 Comment=Opening folders content in Popup Window
-#TryExec=/home/marcelo/Programas/Telegram/Telegram
-Exec=/home/marcelo/Projetos/plankfolderlauncher/app "/home/marcelo/Projetos/teste/"
-Icon=document-open
+Exec=/home/marcelo/Projetos/plankfolderlauncher/app "/home/marcelo/Projetos/Applications/"
+Icon=/home/marcelo/Projetos/plankfolderlauncher/icon2.png
 Terminal=false
-#StartupWMClass=TelegramDesktop
 Type=Application
-#Categories=Network;InstantMessaging;Qt;
-#MimeType=x-scheme-handler/tg;
-#X-Desktop-File-Install-Version=0.22
